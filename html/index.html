@@ -1,0 +1,294 @@
+<div id="app" style="display: none;">
+
+	<p v-if="loading && !selectLoading" class="loading no-data">一大批数据正在赶来...</p>
+	<v-app v-else>
+		<v-main class="body">
+			<v-toolbar color="#f5f5f5" dense height="50px">
+				<v-app-bar-nav-icon @click="openDrawer"></v-app-bar-nav-icon>
+				<v-text-field hide-details clearable single-line v-model="searchValue" label="请输入您要搜索的代码块" @click:clear="clickClear"></v-text-field>
+
+				<v-btn style="margin: 0 15px;" :loading="selectLoading"  small @click="search">
+					<v-icon left>mdi-magnify</v-icon>
+					搜索
+				</v-btn>
+
+				<v-menu offset-y>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn small color="primary" :loading="selectLoading" dark v-bind="attrs" v-on="on">
+							{{lists[listsIndex].text}}
+						</v-btn>
+					</template>
+					<v-list dense>
+						<!-- <v-subheader>REPORTS</v-subheader> -->
+						<v-list-item-group v-model="selectedItem" color="primary">
+							<v-list-item v-for="(item, i) in lists" :key="i" @click="typeFn(i)">
+								<v-list-item-content>
+									<v-list-item-title v-text="item.text"></v-list-item-title>
+								</v-list-item-content>
+							</v-list-item>
+						</v-list-item-group>
+					</v-list>
+				</v-menu>
+				<!-- <v-btn icon>
+					<v-icon>mdi-dots-vertical</v-icon>
+				</v-btn> -->
+			</v-toolbar>
+			<v-virtual-scroll v-if="items.length > 0 " ref="scroll" id="scrolling-techniques-2" :bench="benched" :items="items"
+			 height="calc(100vh - 50px)" v-scroll.self="onScroll" item-height="90">
+				<template v-slot:default="{ item }">
+					<v-list-item :key="item">
+						<v-list-item-action v-if="is_login && listsIndex !== 1" style="margin-right: 15px;">
+							<v-btn icon color="pink" @click="heart(item)">
+								<v-icon v-if="item.is_like">mdi-heart</v-icon>
+								<v-icon v-else color="#666">mdi-heart-outline</v-icon>
+							</v-btn>
+						</v-list-item-action>
+						<v-list-item-content style="padding-right:20px;">
+							<v-list-item-title class="title-box">
+								<template v-if="listsIndex !== 1">
+									<span v-if="item.is_me" class="tips-chips web">
+										我的
+									</span>
+									<span v-else class="tips-chips web">
+										来自 {{(item.userinfo&&(item.userinfo.nickname || item.userinfo.username)) || ''}}
+									</span>
+								</template>
+								<span class="title-top">{{item.title}}</span>
+							</v-list-item-title>
+							<v-list-item-subtitle>
+								{{item.excerpt}}
+							</v-list-item-subtitle>
+							<v-list-item-subtitle v-if="listsIndex !== 1" style="margin-top:10px">
+								<v-list-item-action-text>使用次数: {{item.view_count}}</v-list-item-action-text>
+								<v-list-item-action-text style="margin-left: 15px;">收藏人数: {{item.like_count}}</v-list-item-action-text>
+								<!-- 	<v-list-item-action-text style="margin-left: 15px;">form - </v-list-item-action-text> -->
+							</v-list-item-subtitle>
+							<v-list-item-subtitle v-else style="margin-top:10px">
+								<span v-if="is_login" class="tips-chips" :class="[ item.article_status === 1?'web':'local']">
+									{{item.article_status === 1?'发布中':'本地代码'}} {{ (item.user_id && item.user_id !== userinfo._id)? ' | 其他账号':''}}
+								</span>
+								<span v-else class="tips-chips local">登录后查看更多</span>
+							</v-list-item-subtitle>
+						</v-list-item-content>
+						<v-list-item-action>
+							<v-row align="center">
+								<v-btn class="mr-2" color="#5cbbf6" dark small @click="insert(item)">使用</v-btn>
+								<v-btn class="mr-2" color="#5cbbf6" dark small @click="openDetail(item)">详情</v-btn>
+								<v-btn class="mr-2" dark :loading="syncLoading" v-if="is_login && listsIndex === 1&&(item.user_id===userinfo._id || !item.user_id)"
+								 class="ml-2" :color="item.article_status === 1?'blue-grey':'#5cbbf6'" small @click="updateWeb(item)">{{item.article_status === 1?'撤销发布':'发布'}}
+								</v-btn>
+							</v-row>
+						</v-list-item-action>
+						<!-- 	<v-list-item-action>
+						</v-list-item-action>
+						<v-list-item-action>
+						</v-list-item-action> -->
+					</v-list-item>
+					<v-divider></v-divider>
+					<div v-if="lastId === item._id && items.length > 15" class="load-more">
+						<span v-if="loadType === 'loadmore'">上拉加载更多</span>
+						<span v-else-if="loadType === 'loading'">加载中...</span>
+						<span v-else>没有更多数据</span>
+					</div>
+				</template>
+			</v-virtual-scroll>
+			<div v-else class="no-data">
+				<span v-if="selectLoading">更多内容正在快马加鞭的赶来！</span>
+				<span v-else>我的代码在那里？哦！ 我还没收藏呢！！</span>
+			</div>
+			<v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+				<v-card>
+					<v-toolbar>
+						<v-btn icon @click="dialog = false">
+							<v-icon>mdi-close</v-icon>
+						</v-btn>
+						<v-toolbar-title>
+							<div style="font-size:16px">收藏详情</div>
+						</v-toolbar-title>
+					</v-toolbar>
+					<v-card elevation="0">
+						<v-card-text>
+							<div>来自 {{userinfo.nickname ||userinfo.username}}</div>
+							<p class="display-1 text--primary">
+								{{detailData.title}}
+							</p>
+							<!-- <p>adjective</p> -->
+							<div class="text--primary">{{detailData.excerpt}}</div>
+						</v-card-text>
+						<!-- 	<v-card-text>
+							来自 {{userinfo.nickname ||userinfo.username}}
+						</v-card-text>
+						<v-card-title class="headline">
+							{{detailData.title}}
+						</v-card-title>
+						<v-card-subtitle>{{detailData.excerpt}}</v-card-subtitle> -->
+						<v-card-text>
+							<div class="detail-code">
+								<div class="md-box-header">
+									<div class="md-box-header-left">
+										<div class="md-box-header-item left"></div>
+										<div class="md-box-header-item center"></div>
+										<div class="md-box-header-item right"></div>
+									</div>
+									<v-btn color="#5cbbf6" dark small elevation="2" rounded @click="insert(detailData)">
+										使用
+									</v-btn>
+								</div>
+								<div class="detail-code-content">
+									<pre>{{detailData.content}}</pre>
+								</div>
+							</div>
+						</v-card-text>
+						<v-card-actions>
+							<v-btn text color="teal accent-4" @click="insert(detailData)">
+								使用
+							</v-btn>
+						</v-card-actions>
+					</v-card>
+					<!-- </v-container> -->
+				</v-card>
+			</v-dialog>
+			<v-navigation-drawer v-model="drawer" width="300" absolute temporary>
+				<template v-if="is_login">
+					<div v-if="loginTypeIndex === 0">
+						<v-list-item>
+							<v-list-item-avatar>
+								<img :src="userinfo.avatar || imgUrl">
+							</v-list-item-avatar>
+							<v-list-item-content>
+								<v-list-item-title>
+									{{userinfo.nickname ||userinfo.username}}
+								</v-list-item-title>
+								<v-list-item-subtitle>{{userinfo.desc||'他很懒，什么都没留下'}}</v-list-item-subtitle>
+							</v-list-item-content>
+						</v-list-item>
+						<v-divider></v-divider>
+						<v-list nav dense>
+							<v-list-item>
+								<v-list-item-icon>
+									<v-icon>mdi-account-lock</v-icon>
+								</v-list-item-icon>
+								<v-list-item-content>
+									<v-list-item-title>首页是否固定为我的</v-list-item-title>
+								</v-list-item-content>
+								<v-list-item-action>
+									<v-switch color="#5cbbf6" :disabled="fixLoading" :loading="fixLoading" :input-value="setting.home_is_mine"
+									 @change="fixedHome"></v-switch>
+								</v-list-item-action>
+							</v-list-item>
+							<v-list-item>
+								<v-list-item-icon>
+									<v-icon>mdi-web</v-icon>
+								</v-list-item-icon>
+								<v-list-item-content>
+									<v-list-item-title>是否自动同步到线上</v-list-item-title>
+								</v-list-item-content>
+								<v-list-item-action>
+									<v-switch color="#5cbbf6" :disabled="webLoading" :loading="webLoading" :input-value="setting.is_sync_web"
+									 @change="syncWeb"></v-switch>
+								</v-list-item-action>
+							</v-list-item>
+							<v-list-item link @click="openEdit(1)">
+								<v-list-item-icon>
+									<v-icon>mdi-account-edit</v-icon>
+								</v-list-item-icon>
+								<v-list-item-content>
+									<v-list-item-title>更新个人信息</v-list-item-title>
+								</v-list-item-content>
+							</v-list-item>
+							<v-list-item link>
+								<v-list-item-icon>
+									<v-icon>mdi-lock</v-icon>
+								</v-list-item-icon>
+								<v-list-item-content>
+									<v-list-item-title>修改密码</v-list-item-title>
+								</v-list-item-content>
+							</v-list-item>
+							<v-list-item link :loading="loginLoading" @click="logout">
+								<v-list-item-icon>
+									<v-icon>mdi-logout</v-icon>
+								</v-list-item-icon>
+
+								<v-list-item-content>
+									<v-list-item-title>{{loginLoading?'退出中...':'退出'}}</v-list-item-title>
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</div>
+					<div v-if="loginTypeIndex === 1" class="forms-box">
+						<p class="error-message">
+							<span v-if="message">{{message}}</span>
+						</p>
+						<v-form ref="form" lazy-validation>
+							<v-text-field disabled label="账号" v-model="userinfo.username" required></v-text-field>
+							<v-text-field label="头像" v-model="formData.avatar" placeholder="请输入线上头像地址" ></v-text-field>
+							<v-text-field label="昵称" v-model="formData.nickname" placeholder="请输入您要使用的昵称"></v-text-field>
+							<v-textarea label="个人介绍" v-model="formData.desc" auto-grow rows="1" placeholder="请输入您的个人介绍"></v-textarea>
+							<v-btn block small elevation="5" color="success" class="mt-2" :loading="loginLoading" :disabled="(!formData.avatar && !formData.avatar && !formData.desc )||loginLoading"
+							 @click="updateUser">
+								更新账号信息
+							</v-btn>
+
+							<v-btn block small elevation="3" :disabled="loginLoading" :loading="loginLoading" class="mt-2" @click="openEdit(0)">
+								返回
+							</v-btn>
+						</v-form>
+					</div>
+				</template>
+				<div v-else class="forms-box">
+					<template v-if="is_no_login_type === 0">
+						<v-btn block small elevation="5" color="success" class="mt-2" @click="openLogin(1)">
+							登录账号
+						</v-btn>
+
+						<v-btn block small elevation="5" color="success" class="mt-4" @click="openLogin(2)">
+							注册账号
+						</v-btn>
+					</template>
+					<template v-if="is_no_login_type === 1">
+						<v-form ref="form" lazy-validation>
+							<p class="error-message">
+								<span v-if="message">{{message}}</span>
+							</p>
+							<v-text-field label="账号" v-model="formData.name" :rules="rulus.name" placeholder="请输入您的登录用账号" required></v-text-field>
+							<v-text-field label="密码" type="password" v-model="formData.password" :rules="rulus.password" placeholder="请输入您的登录用密码"
+							 required></v-text-field>
+							<v-btn block small elevation="5" :loading="loginLoading" :disabled="(!formData.name && !formData.password )||loginLoading"
+							 color="success" class="mt-2" @click="validate">
+								登录账号
+							</v-btn>
+							<v-btn :disabled="loginLoading" :loading="loginLoading" block small elevation="3" class="mt-2" @click="openLogin(0)">
+								返回
+							</v-btn>
+						</v-form>
+					</template>
+					<template v-if="is_no_login_type === 2">
+						<p class="error-message">
+							<span v-if="message">{{message}}</span>
+						</p>
+						<v-form ref="form" lazy-validation>
+							<v-text-field :counter="10" label="账号" v-model="formData.name" :rules="rulus.reg_name" placeholder="请输入您的登录用账号"
+							 required></v-text-field>
+
+							<v-text-field label="密码" type="password" v-model="formData.password" :rules="rulus.password" placeholder="请输入密码"
+							 required></v-text-field>
+							<v-text-field label="确认密码" type="password" v-model="formData.verify_password" :rules="rulus.verify_password"
+							 placeholder="请确认密码" required></v-text-field>
+
+							<v-btn block small elevation="5" color="success" class="mt-2" :loading="loginLoading" :disabled="(!formData.name && !formData.password )||loginLoading"
+							 @click="register">
+								注册账号
+							</v-btn>
+
+							<v-btn block small elevation="3" :disabled="loginLoading" :loading="loginLoading" class="mt-2" @click="openLogin(0)">
+								返回
+							</v-btn>
+						</v-form>
+					</template>
+
+					<p v-if="is_no_login_type === 0" class="no-data">登录后显示更多配置信息</p>
+				</div>
+			</v-navigation-drawer>
+		</v-main>
+	</v-app>
+</div>

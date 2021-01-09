@@ -1,0 +1,159 @@
+html,
+body {
+	background-color: var(--background);
+}
+
+.body {
+	background-color: var(--background);
+}
+
+#app {
+	/* padding: 10px 15px; */
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.autocomplete {
+	width: 500px;
+	margin: 20px;
+}
+
+.card-image {
+	width: 100%;
+	height: 200px;
+	border-bottom: 1px solid #f5f5f5;
+	overflow: hidden;
+}
+
+.card-image img {
+	width: 100%;
+}
+
+.sub-title-box {
+	display: flex;
+}
+
+.sub-title-edition {
+	color: #ff5a5f;
+}
+
+p.p.link {
+	margin: 0;
+}
+
+.link {
+	text-decoration: underline;
+	color: #666;
+	cursor: pointer;
+}
+
+.link:hover {
+	color: #007AFF;
+}
+
+.no-data {
+	width: 100%;
+	text-align: center;
+	margin-top: 50px;
+	color: #999;
+	font-size: 16px;
+}
+
+.scrolling-techniques-2 {
+	padding-top: 100px;
+}
+
+.load-more {
+	padding: 10px 0;
+	width: 100%;
+	text-align: center;
+	font-size: 14px;
+	color: #999;
+}
+
+.loading {}
+
+.detail-code {
+	/* padding: 10px; */
+	color: #333;
+	/* margin: .85rem 0; */
+	border-radius: 5px;
+	box-shadow: 0 0 8px 1px rgba(0, 0, 0, .15);
+	overflow: hidden;
+	background-color: #fff;
+}
+
+.md-box-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-left: 10px;
+	padding: 5px;
+	padding-right: 15px;
+	/* height: 26px; */
+}
+.md-box-header-left {
+	display: flex;
+}
+.md-box-header-item {
+	margin-left: 8px;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+}
+
+.md-box-header-item.left {
+	background-color: #f16e5a;
+}
+.md-box-header-item.center {
+	background-color: #f5c147;
+}
+.md-box-header-item.right {
+	background-color: #4ccb4a;
+}
+.detail-code-content {
+	padding: 10px 15px;
+	overflow-x: auto;
+	box-sizing: border-box;
+}
+.forms-box {
+	padding: 15px;
+}
+.error-message {
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+	color: red;
+}
+.title-box {
+	display: flex;
+	align-items: center;
+}
+.tips-chips {
+	display: inline-block;
+	position: relative;
+	/* top: -4px; */
+	padding: 2px 5px;
+	border-radius: 3px;
+	font-size: 12px;
+	margin-right: 5px;
+	border: 1px #999 solid;
+}
+
+.tips-chips.web {
+	background-color: #f0f9eb;
+	color: #67c23a;
+	border: 1px #e1f3d8 solid;
+}
+.tips-chips.local {
+	background-color: #909399;
+	color: #f4f4f5;
+	border: 1px #e9e9eb solid;
+}
+.title-top {
+	/* border: 1px red solid; */
+}
