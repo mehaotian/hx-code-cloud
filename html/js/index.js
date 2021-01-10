@@ -136,7 +136,7 @@ var app = new Vue({
 				this.getList()
 			}
 		},
-		
+
 		/**
 		 * 搜索
 		 */
@@ -167,7 +167,7 @@ var app = new Vue({
 				})
 			}
 		},
-		
+
 		/**
 		 * 清空搜索
 		 */
@@ -175,7 +175,7 @@ var app = new Vue({
 			this.searchValue = ''
 			this.search()
 		},
-		
+
 		/**
 		 * 更新用户信息
 		 */
@@ -214,7 +214,7 @@ var app = new Vue({
 				});
 			});
 		},
-		
+
 		/**
 		 * 编辑用户信息
 		 * @param {Object} type
@@ -236,7 +236,7 @@ var app = new Vue({
 			}
 
 		},
-		
+
 		/**
 		 * 打开登录注册窗口
 		 * @param {Object} type
@@ -346,11 +346,23 @@ var app = new Vue({
 				is_like,
 				_id
 			} = item
+
+			if (this.heartUpdate) {
+				hbuilderx.postMessage({
+					command: "success",
+					msg: '操作太快了，客官慢一点啊！'
+				});
+				return
+			}
+			this.heartUpdate = true
 			const index = this.items.findIndex(v => v._id === _id)
 
 			this.items[index].is_like = !this.items[index].is_like
 			if (is_like) {
 				this.items[index].like_count -= 1
+				if (this.items[index].like_count < 0) {
+					this.items[index].like_count = 0
+				}
 			} else {
 				this.items[index].like_count += 1
 			}
@@ -366,7 +378,9 @@ var app = new Vue({
 					data
 				} = response
 				console.log(data);
+				this.heartUpdate = false
 				if (data.code === 200) {
+
 					hbuilderx.postMessage({
 						command: "success",
 						msg: !is_like ? '收藏成功' : '取消收藏'
@@ -381,11 +395,15 @@ var app = new Vue({
 						this.items[index].like_count += 1
 					} else {
 						this.items[index].like_count -= 1
+						if (this.items[index].like_count < 0) {
+							this.items[index].like_count = 0
+						}
 					}
 				}
 
 			}).catch((error) => {
 				console.log(error);
+				this.heartUpdate = false
 				hbuilderx.postMessage({
 					command: "error",
 					msg: '收藏失败，请重试'
@@ -395,6 +413,9 @@ var app = new Vue({
 					this.items[index].like_count += 1
 				} else {
 					this.items[index].like_count -= 1
+					if (this.items[index].like_count < 0) {
+						this.items[index].like_count = 0
+					}
 				}
 			});
 		},
@@ -510,6 +531,7 @@ var app = new Vue({
 
 				} else {
 					this.message = res.data.msg
+					this.loginLoading = false
 				}
 
 			}).catch((error) => {
@@ -581,7 +603,6 @@ var app = new Vue({
 					}
 				}
 			}).then((res) => {
-				this.loginLoading = false
 				if (res.data.code === 0) {
 					if (this.lists.length === 2) {
 						this.lists.push({
@@ -595,6 +616,7 @@ var app = new Vue({
 					this.getUserinfo(res.data.token)
 				} else {
 					this.message = res.data.msg
+					this.loginLoading = false
 				}
 			}).catch((error) => {
 				this.loginLoading = false

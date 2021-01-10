@@ -65,7 +65,7 @@
 							</v-list-item-subtitle>
 							<v-list-item-subtitle v-else style="margin-top:10px">
 								<span v-if="is_login" class="tips-chips" :class="[ item.article_status === 1?'web':'local']">
-									{{item.article_status === 1?'发布中':'本地代码'}} {{ (item.user_id && item.user_id !== userinfo._id)? ' | 其他账号':''}}
+									{{item.article_status === 1?'已发布':'本地代码'}} {{ (item.user_id && item.user_id !== userinfo._id)? ' | 其他账号':''}}
 								</span>
 								<span v-else class="tips-chips local">登录后查看更多</span>
 							</v-list-item-subtitle>
@@ -108,7 +108,7 @@
 					</v-toolbar>
 					<v-card elevation="0">
 						<v-card-text>
-							<div>来自 {{userinfo.nickname ||userinfo.username}}</div>
+							<div v-if="detailData.userinfo">来自 {{ detailData.userinfo.nickname ||detailData.userinfo.username}}</div>
 							<p class="display-1 text--primary">
 								{{detailData.title}}
 							</p>
