@@ -5,7 +5,7 @@
 		<v-main class="body">
 			<v-toolbar color="#f5f5f5" dense height="50px">
 				<v-app-bar-nav-icon @click="openDrawer"></v-app-bar-nav-icon>
-				<v-text-field hide-details clearable single-line v-model="searchValue" label="请输入您要搜索的代码块" @click:clear="clickClear"></v-text-field>
+				<v-text-field hide-details clearable single-line v-model="searchValue" label="请输入您要搜索的代码片段" @click:clear="clickClear"></v-text-field>
 
 				<v-btn style="margin: 0 15px;" :loading="selectLoading"  small @click="search">
 					<v-icon left>mdi-magnify</v-icon>

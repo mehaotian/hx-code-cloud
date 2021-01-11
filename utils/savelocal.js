@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const hx = require("hbuilderx");
 
 class Database {
 	static getInstance() {
@@ -9,17 +10,20 @@ class Database {
 		return this.instance;
 	}
 	constructor(arg) {
+		const appDataCachePath = path.join(hx.env.appData)
+		console.log('缓存地址', hx.env.appData)
 		this.instance = null
-		this.filePath = path.join(__dirname, '..', 'database')
+		this.filePath = path.join(appDataCachePath, 'cacheByhxCodeCloud')
 		this.fileName = 'data.json'
 		// this.localpath = '../database/data.json'
 	}
 
-	insert(content) {
+	insert(content = []) {
 		return new Promise((resolve, reject) => {
 			fs.exists(path.join(this.filePath, this.fileName), (exists) => {
 				if (exists) {
 					console.log("该文件存在！");
+					if(!content || content.length === 0) return
 					this.add(content)
 				} else {
 					console.log("该文件不存在！");
@@ -54,11 +58,11 @@ class Database {
 			})
 		})
 	}
-	
-	eidt(obj){
-		this.read().then((data)=>{
-			data.map(v=>{
-				if(v.title === obj.title){
+
+	eidt(obj) {
+		this.read().then((data) => {
+			data.map(v => {
+				if (v.title === obj.title) {
 					v._id = obj.id
 					v.article_status = obj.article_status
 					v.user_id = obj.user_id
@@ -66,10 +70,10 @@ class Database {
 				return v
 			})
 			this._write(JSON.stringify(data))
-		}).catch(()=>{
+		}).catch(() => {
 			console.log('错误');
 		})
-		
+
 	}
 
 	read() {

@@ -1,7 +1,7 @@
 {
 	"name": "codeCloud",
-	"description": "代码云,收藏你优秀的代码块",
-	"displayName": "伟大代码收藏夹",
+	"description": "代码云,收藏你优秀的代码片段",
+	"displayName": "代码收藏夹",
 	"version": "0.0.1",
 	"publisher": "meHaoTian",
 	"engines": {
@@ -21,7 +21,7 @@
 			"rightside": [
 				{
 					"id": "ht.code.webview",
-					"title": "我的代码收藏"
+					"title": "CodeCloud控制台"
 				}
 			]
 		},
@@ -29,14 +29,14 @@
 			"ht.code.webview": [
 				{
 					"id": "ht.code.mycodeview",
-					"name": "我的代码收藏"
+					"name": "CodeCloud控制台"
 				}
 			]
 		},
 		"commands": [
 			{
 				"command": "ht.code.copycode",
-				"title": "添加选中代码或当前行到 GreatCode"
+				"title": "添加选中代码或当前行到 CodeCloud"
 			},
 			{
 				"command": "ht.code.insertcode",
@@ -44,7 +44,7 @@
 			},
 			{
 				"command": "ht.code.mycode",
-				"title": "打开 GreatCode 控制台"
+				"title": "打开 CodeCloud 控制台"
 			}
 		],
 		"menus": {

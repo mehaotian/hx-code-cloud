@@ -57,8 +57,8 @@ class Core {
 
 		let webviewDialog = hx.window.createWebViewDialog({
 			modal: false,
-			title: "是否确认收藏代码块？",
-			description: "填写一些必要信息，让你更好的分清它们！稍后可以到我发布的代码块里填写更详细的信息",
+			title: "是否确认收藏代码片段？",
+			description: "填写一些必要信息，让你更好的分清它们！稍后可以到我发布的代码片段里填写更详细的信息",
 			dialogButtons: [
 				"取消", "确定"
 			],
@@ -169,6 +169,8 @@ class Core {
 	 */
 	register(webview) {
 		this.webview = webview
+		// 初始化本地数据
+		db.insert()
 		return [
 			hx.commands.registerCommand('ht.code.copycode', this.copycode.bind(this)),
 			hx.commands.registerCommand('ht.code.insertcode', this.insertcode.bind(this)),

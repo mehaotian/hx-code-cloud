@@ -50,11 +50,11 @@ module.exports =
 				<form>
 					<div class="input_control">
 						<p class="title">请输入展示标题<p>
-						<input id="title" type="text" class="form_input" placeholder="您的代码块叫什么？"/>
+						<input id="title" type="text" class="form_input" placeholder="您的代码片段叫什么？"/>
 					</div>
 					<div class="input_control">
-						<p class="title">请输入代码块描述<p>
-						<input id="excerpt" type="text" class="form_input" placeholder="您的代码块是做什么的？"/>
+						<p class="title">请输入代码片段描述<p>
+						<input id="excerpt" type="text" class="form_input" placeholder="您的代码片段是做什么的？"/>
 					</div>
 				</form>
 				<script>

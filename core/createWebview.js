@@ -48,7 +48,7 @@ function showWebView(webviewPanel) {
 		
 		if(item.command === 'upload'){
 			hx.window.clearStatusBarMessage();
-			hx.window.setStatusBarMessage('代码块同步中...', 0, 'info');
+			hx.window.setStatusBarMessage('代码片段同步中...', 0, 'info');
 		}
 		
 		if (item.command === 'syncSuccess') {
