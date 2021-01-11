@@ -1,7 +1,7 @@
 {
-	"name": "codeCloud",
-	"description": "代码云,收藏你优秀的代码片段",
-	"displayName": "代码收藏夹",
+	"name": "mehaotian-CodeCloud",
+	"description": "代码云,快速收藏你优秀的代码片段，使用来自网络的代码片段。",
+	"displayName": "CodeCloud代码收藏夹-体验版",
 	"version": "0.0.1",
 	"publisher": "meHaoTian",
 	"engines": {
@@ -10,7 +10,7 @@
 	"categories": [
 		"Other"
 	],
-	"main": "./main",
+	"main": "./extension",
 	"activationEvents": [
 		"onCommand:ht.code.copycode",
 		"onCommand:ht.code.insertcode",

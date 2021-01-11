@@ -734,7 +734,7 @@ var app = new Vue({
 		 */
 		getList({
 			page = 1,
-			pageSize = 20,
+			pageSize = 100,
 			type = '',
 			search = ''
 		} = {}) {
