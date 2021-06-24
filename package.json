@@ -1,79 +1,28 @@
 {
-	"name": "mehaotian-CodeCloud",
-	"description": "代码云,快速收藏你优秀的代码片段，使用来自网络的代码片段。",
-	"displayName": "CodeCloud代码收藏夹-体验版",
-	"version": "0.0.1",
-	"publisher": "meHaoTian",
-	"engines": {
-		"HBuilderX": "^3.0.0"
+	"name": "async-pagejson",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"dev": "node ./build/dev.js",
+		"build": "node ./build/build.js"
 	},
-	"categories": [
-		"Other"
-	],
-	"main": "./extension",
-	"activationEvents": [
-		"onCommand:ht.code.copycode",
-		"onCommand:ht.code.insertcode",
-		"onCommand:ht.code.mycode"
-	],
-	"contributes": {
-		"viewsContainers": {
-			"rightside": [
-				{
-					"id": "ht.code.webview",
-					"title": "CodeCloud控制台"
-				}
-			]
-		},
-		"views": {
-			"ht.code.webview": [
-				{
-					"id": "ht.code.mycodeview",
-					"name": "CodeCloud控制台"
-				}
-			]
-		},
-		"commands": [
-			{
-				"command": "ht.code.copycode",
-				"title": "添加选中代码或当前行到 CodeCloud"
-			},
-			{
-				"command": "ht.code.insertcode",
-				"title": "插入上次代码（暂时无用）"
-			},
-			{
-				"command": "ht.code.mycode",
-				"title": "打开 CodeCloud 控制台"
-			}
-		],
-		"menus": {
-			"editor/context": [
-				{
-					"command": "ht.code.copycode",
-					"group": "z_commands",
-					"when": "editorTextFocus"
-				},
-				{
-					"command": "ht.code.insertcode",
-					"group": "z_commands",
-					"when": "editorTextFocus"
-				},
-				{
-					"command": "ht.code.mycode",
-					"group": "z_commands",
-					"when": "editorTextFocus"
-				},
-				{
-					"group": "z_commands"
-				}
-			]
-		}
-	},
-	"extensionDependencies": [
-		"plugin-manager"
-	],
 	"devDependencies": {
-		"axios": "^0.21.1"
+		"@babel/core": "^7.14.3",
+		"@babel/preset-env": "^7.14.2",
+		"@rollup/plugin-babel": "^5.3.0",
+		"@rollup/plugin-buble": "^0.21.3",
+		"@rollup/plugin-commonjs": "^19.0.0",
+		"@rollup/plugin-json": "^4.1.0",
+		"@rollup/plugin-node-resolve": "^13.0.0",
+		"chalk": "^4.1.1",
+		"chokidar": "^3.5.1",
+		"koa": "^2.13.1",
+		"koa-compose": "^4.1.0",
+		"koa-static": "^5.0.0",
+		"rollup": "^2.50.1",
+		"rollup-plugin-copy": "^3.4.0",
+		"rollup-plugin-serve": "^1.1.0",
+		"rollup-plugin-uglify": "^6.0.4"
 	}
 }

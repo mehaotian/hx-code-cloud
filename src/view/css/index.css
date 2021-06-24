@@ -1,0 +1,48 @@
+html,
+body {
+	/* background-color: var(--background); */
+	background-color: #fff;
+}
+
+.body {
+	/* background-color: var(--background); */
+	background-color: #fff;
+}
+
+#app {
+	display: none;
+	/* padding: 10px 15px; */
+}
+.editormd .cm-tab {
+	/* border: 1px red solid; */
+	background: none;
+}
+.shadow-box {
+	width: 90px;
+	height: 90px;
+	margin: 25px;
+	border-radius: 50%;
+	font-size: 12px;
+}
+.my-custom-image {
+	filter: blur(8px) opacity(90%) brightness(80%);
+	background-color: #333;
+}
+.login-box {
+	text-align: center;
+}
+.login-box p {
+	margin-top: 10px;
+	color: #333;
+}
+.login-box p.red{
+	color: red;
+	font-size: 16px;
+}
+.iptsc {
+	position: absolute;
+	z-index: -1;
+	width: 0;
+	height: 0;
+	opacity: 0;
+}

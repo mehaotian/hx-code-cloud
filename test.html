@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title></title>
+		<link href="https://code.mehaotian.com/fonts.css" rel="stylesheet" type="text/css">
+		<link href="https://code.mehaotian.com/jsdelivr/quasar@1.15.10.min.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="https://code.mehaotian.com/editor/editormd.min.css" />
+		<link rel="stylesheet" type="text/css" href="src/view/css/base.css" />
+		<link rel="stylesheet" type="text/css" href="src/view/css/index.css" />
+		<!-- css -->
+	</head>
+	<body>
+		<div id="app">
+			<q-layout view="lHh lpr lFf" container style="height: 100vh;background-color: #fff;">
+				<q-header elevated>
+					<q-toolbar style="background-color:#eee;">
+						<q-btn flat round dense icon="menu" color="blue-grey-6" class="q-mr-sm"
+							@click="drawer = !drawer"></q-btn>
+						<q-toolbar-title>
+							<q-input outlined bg-color="white" color="blue-grey-2" field dense v-model="text"
+								placeholder="请输入你要搜索的内容">
+								<template v-slot:prepend>
+									<q-icon name="search" />
+								</template>
+								<template v-slot:after>
+									<q-btn class="q-mr-sm" size="16px" color="blue-grey-2" padding="4px 15px" dark
+										dense>搜索</q-btn>
+								</template>
+							</q-input>
+						</q-toolbar-title>
+
+					</q-toolbar>
+				</q-header>
+				<q-drawer v-model="drawer" :breakpoint="800" :width="300" :breakpoint="400" show-if-above>
+					<template v-if="drawerStatus === 0">
+
+						<q-card class="q-mx-md q-my-md q-mt-lg">
+							<q-card-section>
+								<div class="text-h6">您还未登录</div>
+							</q-card-section>
+
+							<q-card-section class="q-pt-none">
+								<div class="login-box">
+									<p>不过这并不会妨碍您的使用，您仍然可以使用网络上优秀的代码片段！</p>
+									<p class="red">但 —— 是！！！</p>
+									<p>您自己的代码片段和笔记都只会保留在本地。</p>
+									<p>您优秀的代码片段和笔记将无法发布和分享给其他小伙伴。</p>
+									<p>所以 —— ，您值的登录！</p>
+								</div>
+							</q-card-section>
+						</q-card>
+
+						<div class="q-mx-md q-mt-lg">
+							<q-btn class="full-width q-mx-md" color="primary" @click="goto(2)">登录</q-btn>
+							<q-btn class="full-width q-mx-md q-mt-sm" color="secondary" @click="goto(3)">注册</q-btn>
+						</div>
+					</template>
+					<template v-else-if="drawerStatus === 1">
+
+						<q-img img-class="my-custom-image" :src="userinfo.avatar" style="height: 150px"
+							:placeholder-src="imgUrl">
+							<div class="absolute-bottom bg-transparent">
+								<q-avatar size="56px" class="q-mb-sm" color="green-2">
+									<img :src="userinfo.avatar || imgUrl" :placeholder-src="imgUrl">
+								</q-avatar>
+								<div class="text-weight-bold">{{userinfo.nickname ||userinfo.username}}</div>
+								<div>{{userinfo.desc||'他很懒，什么都没留下'}}</div>
+							</div>
+						</q-img>
+						<q-separator color="blue-grey-3" size="3px"></q-separator>
+						<q-list padding>
+							<q-item clickable v-ripple @click="goto(5)">
+								<q-item-section avatar>
+									<q-icon name="assignment_ind" color="blue-grey-14" />
+								</q-item-section>
+								<q-item-section>
+									修改个人信息
+								</q-item-section>
+							</q-item>
+							<q-item clickable v-ripple>
+								<q-item-section avatar>
+									<q-icon name="bookmarks" color="blue-grey-14" />
+								</q-item-section>
+								<q-item-section>
+									我的收藏
+								</q-item-section>
+							</q-item>
+							<q-item clickable v-ripple>
+								<q-item-section avatar>
+									<q-icon name="send" color="blue-grey-14" />
+								</q-item-section>
+								<q-item-section>
+									我发布的
+								</q-item-section>
+							</q-item>
+						</q-list>
+						<div class="q-mx-md q-mt-lg">
+							<q-btn push class="full-width q-ml-md q-mr-md" :loading="loginLoading" color="red"
+								@click="logout">退出登录</q-btn>
+						</div>
+					</template>
+					<template v-else-if="drawerStatus === 2">
+
+						<q-card class="q-mx-md q-my-md q-mt-lg">
+							<q-card-section>
+								<div class="text-h6">登录账号</div>
+							</q-card-section>
+
+							<q-card-section class="q-pt-none">
+								<q-form ref="loginForm">
+									<q-input dense outlined v-model="formData.name" label="账号" lazy-rules
+										:rules="[ val => val && val.length > 0 || '请输入您的账号']">
+										<template v-slot:prepend>
+											<q-icon name="person" />
+										</template>
+									</q-input>
+									<q-input type="password" dense class="q-mt-sm" outlined color="primary"
+										v-model="formData.password" label="密码" lazy-rules
+										:rules="[ val => val && val.length > 0 || '请输入您的密码']">
+										<template v-slot:prepend>
+											<q-icon name="lock" />
+										</template>
+									</q-input>
+								</q-form>
+							</q-card-section>
+						</q-card>
+
+						<div class="q-mx-md q-mt-lg">
+							<q-btn class="full-width q-mx-md" :loading="loginLoading" color="primary"
+								@click="loginSubmit" push>登录账号</q-btn>
+							<q-btn push class="full-width q-mx-md q-mt-sm" color="secondary" @click="goto(0)">返回</q-btn>
+						</div>
+					</template>
+					<template v-else-if="drawerStatus === 3">
+						<q-card class="q-mx-md q-my-md q-mt-lg">
+							<q-card-section>
+								<div class="text-h6">注册账号</div>
+								 <div class="text-subtitle2">请牢记您的账号密码 ，因为我没做账号找回，丢了可不好找！！！</div>
+							</q-card-section>
+
+							<q-card-section class="q-pt-none">
+								<q-form ref="registerForm">
+									<q-input dense outlined v-model="formData.name" label="账号" lazy-rules
+										:rules="[ val => val && val.length > 0 || '请输入您的账号',val=>val.length > 5 && val.length < 16|| '长度应该在 6-16 之间',val => (/^[\@\.a-zA-Z0-9_-]{6,16}$/.test(val)) || '只能包含数字字母 . @ - _ 字符']">
+										<template v-slot:prepend>
+											<q-icon name="person" />
+										</template>
+									</q-input>
+									<q-input type="password" dense class="q-mt-sm" outlined color="primary"
+										v-model="formData.password" label="密码" lazy-rules
+										:rules="[ val => val && val.length > 0 || '请输入您的密码',val=>val.length > 5 && val.length < 16|| '长度应该在 6-16 之间']">
+										<template v-slot:prepend>
+											<q-icon name="lock" />
+										</template>
+									</q-input>
+									<q-input type="password" dense class="q-mt-sm" outlined color="primary"
+										v-model="formData.verify_password" label="确认密码" lazy-rules
+										:rules="[ val => val && val.length > 0 || '请确认您的密码', val =>formData.password === val || '两次输入的密码不一致']">
+										<template v-slot:prepend>
+											<q-icon name="lock" />
+										</template>
+									</q-input>
+									<div class="text-subtitle2">选填</div>
+									<label>
+										<q-item clickable>
+											<q-item-section>选择头像</q-item-section>
+											<q-item-section avatar>
+												<q-avatar color="green-2">
+													<img :src="imgUrl">
+												</q-avatar>
+											</q-item-section>
+
+										</q-item>
+										 <q-file class="iptsc" v-model="filemodel" label="Standard" ref="file" @input="chooseImage"/>
+
+									</label>
+									<q-input dense outlined v-model="formData.nickname" label="昵称">
+										<template v-slot:prepend>
+											<q-icon name="emoji_symbols" />
+										</template>
+									</q-input>
+									<q-input type="textarea" class="q-mt-sm" dense outlined v-model="formData.desc"
+										label="个性签名">
+										<template v-slot:prepend>
+											<q-icon name="sports_handball" />
+										</template>
+									</q-input>
+								</q-form>
+							</q-card-section>
+
+						</q-card>
+
+						<div class="q-mx-md q-mt-lg">
+							<q-btn class="full-width q-mx-md" :loading="loginLoading" color="primary"
+								@click="registerSubmit" push>注册账号</q-btn>
+							<q-btn class="full-width q-mx-md q-mt-sm" color="primary" @click="goto(2)" push>已有账号，去登录
+							</q-btn>
+							<q-btn push class="full-width q-mx-md q-mt-sm" color="secondary" @click="goto(0)">返回</q-btn>
+						</div>
+					</template>
+					<template v-else-if="drawerStatus === 5">
+						<q-card class="q-mx-md q-my-md q-mt-lg">
+							<q-card-section>
+								<div class="text-h6">修改个人信息</div>
+							</q-card-section>
+						
+							<q-card-section class="q-pt-none">
+								<q-form ref="registerForm">
+									<label>
+										<q-item clickable>
+											<q-item-section>选择头像</q-item-section>
+											<q-item-section avatar>
+												<q-avatar color="green-2">
+													<img :src="formData.avatar">
+												</q-avatar>
+											</q-item-section>
+						
+										</q-item>
+										<!-- <input class="iptsc" type="file" name="file" id="file" @input="chooseImage" /> -->
+										<q-file class="iptsc" v-model="filemodel" label="Standard" ref="file" @input="chooseImage"/>
+									</label>
+									<q-input dense outlined v-model="formData.nickname" label="昵称">
+										<template v-slot:prepend>
+											<q-icon name="emoji_symbols" />
+										</template>
+									</q-input>
+									<q-input type="textarea" class="q-mt-sm" dense outlined v-model="formData.desc"
+										label="个性签名">
+										<template v-slot:prepend>
+											<q-icon name="sports_handball" />
+										</template>
+									</q-input>
+								</q-form>
+							</q-card-section>
+						
+						</q-card>
+						
+						<div class="q-mx-md q-mt-lg">
+							<q-btn class="full-width q-mx-md" :loading="loginLoading" color="primary"
+								@click="updateUser" push>修改个人信息</q-btn>
+							<q-btn push class="full-width q-mx-md q-mt-sm" color="secondary" @click="goto(1)">返回</q-btn>
+						</div>
+					</template>
+				</q-drawer>
+				<q-page-container>
+					<q-page>
+						<q-scroll-area :thumb-style="thumbStyle" :bar-style="barStyle"
+							style="height: calc(100vh - 55px);" id="scroll">
+							<q-infinite-scroll @load="onLoad" :offset="250">
+								<q-list bordered separator>
+									<q-item class="q-pt-md q-pb-md" v-for="(item, index) in items" :key="index"
+										class="caption">
+										<q-item-section side center>
+											<q-btn flat round color="blue-grey-13" size="18px"
+												:icon="item.is_like?'favorite':'favorite_border'" @click="heart(item)">
+											</q-btn>
+										</q-item-section>
+
+										<q-item-section top>
+											<q-item-label lines="1">
+												<span
+													class="text-weight-medium text-primary">[{{item.userinfo.nickname||item.userinfo.username}}]</span>
+												<span class="text-grey-8"> - {{item.title}}</span>
+											</q-item-label>
+											<q-item-label caption lines="2" class="q-pt-xs">
+												{{item.excerpt}}
+											</q-item-label>
+											<q-item-label class="q-pt-xs">
+												<q-badge outline color="teal">Javascript</q-badge>
+												<q-badge outline color="purple">md</q-badge>
+												<q-badge outline color="orange">实用</q-badge>
+											</q-item-label>
+											<q-item-label class="q-pt-xs">
+												<span>使用次数：{{item.view_count}}</span>
+												<span class="q-ml-md">收藏人数：{{item.like_count}}</span>
+											</q-item-label>
+
+										</q-item-section>
+
+										<q-item-section top side>
+											<q-item-label>
+												<q-btn class="q-pl-md q-pr-md" dense size="12px">使用</q-btn>
+											</q-item-label>
+											<q-item-label>
+												<q-btn class="q-pl-md q-pr-md" dense size="12px">详情</q-btn>
+											</q-item-label>
+
+										</q-item-section>
+									</q-item>
+								</q-list>
+								<template v-slot:loading>
+									<div class="row justify-center q-my-md">
+										<!--  -->
+										<span v-if="isEnd"> 到底了呢 </span>
+										<span v-else>
+											<q-spinner-dots v-if="!isEnd" color="primary" size="40px" />
+										</span>
+
+									</div>
+								</template>
+							</q-infinite-scroll>
+						</q-scroll-area>
+					</q-page>
+				</q-page-container>
+			</q-layout>
+			<q-dialog v-model="dialogShow" persistent transition-show="scale" transition-hide="scale">
+				<q-card class="bg-red text-white" style="width: 300px">
+					<q-card-section>
+						<div class="text-h6">错误</div>
+					</q-card-section>
+
+					<q-card-section class="q-pt-none">
+						{{message}}
+					</q-card-section>
+
+					<q-card-actions align="right" class="bg-white text-teal">
+						<q-btn flat label="知道了" v-close-popup />
+					</q-card-actions>
+				</q-card>
+			</q-dialog>
+		</div>
+
+		<script src="https://code.mehaotian.com/jsdelivr/vue@2.6.14.min.js"></script>
+		<script src="https://code.mehaotian.com/jsdelivr/quasar@1.15.10.min.js"></script>
+		<script src="https://code.mehaotian.com/jsdelivr/zh-hans.umd.min.js"></script>
+		<script src="https://code.mehaotian.com/jquery@1.11.3.min.js"></script>
+		<script src="https://code.mehaotian.com/editor/editormd.min.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="src/view/js/index.js"></script>
+	</body>
+</html>

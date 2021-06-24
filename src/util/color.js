@@ -1,4 +1,4 @@
-const hx = require("hbuilderx");
+import hx from 'hbuilderx'
 function getThemeColor(area) {
     let config = hx.workspace.getConfiguration();
     let colorScheme = config.get('editor.colorScheme');
@@ -103,4 +103,4 @@ function getThemeColor(area) {
     };
 };
 
-module.exports = getThemeColor
+export default getThemeColor

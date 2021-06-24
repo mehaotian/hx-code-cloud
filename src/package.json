@@ -1,0 +1,76 @@
+{
+	"name": "mehaotian-CodeCloud",
+	"description": "代码云,快速收藏你优秀的代码片段，使用来自网络的代码片段。",
+	"displayName": "CodeCloud代码收藏夹-体验版",
+	"version": "0.0.2",
+	"publisher": "meHaoTian",
+	"engines": {
+		"HBuilderX": "^3.0.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"main": "./extension",
+	"activationEvents": [
+		"onCommand:ht.code.copycode",
+		"onCommand:ht.code.insertcode",
+		"onCommand:ht.code.mycode"
+	],
+	"contributes": {
+		"viewsContainers": {
+			"rightside": [
+				{
+					"id": "ht.code.webview",
+					"title": "CodeCloud控制台"
+				}
+			]
+		},
+		"views": {
+			"ht.code.webview": [
+				{
+					"id": "ht.code.mycodeview",
+					"name": "CodeCloud控制台"
+				}
+			]
+		},
+		"commands": [
+			{
+				"command": "ht.code.copycode",
+				"title": "添加选中代码或当前行到 CodeCloud"
+			},
+			{
+				"command": "ht.code.insertcode",
+				"title": "插入上次代码（暂时无用）"
+			},
+			{
+				"command": "ht.code.mycode",
+				"title": "打开 CodeCloud 控制台"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"command": "ht.code.copycode",
+					"group": "z_commands",
+					"when": "editorTextFocus"
+				},
+				{
+					"command": "ht.code.insertcode",
+					"group": "z_commands",
+					"when": "editorTextFocus"
+				},
+				{
+					"command": "ht.code.mycode",
+					"group": "z_commands",
+					"when": "editorTextFocus"
+				},
+				{
+					"group": "z_commands"
+				}
+			]
+		}
+	},
+	"extensionDependencies": [
+		"plugin-manager"
+	]
+}
