@@ -1,6 +1,6 @@
 const hx = require("hbuilderx");
 const Core = require('./core/index.js')
-const createWebview = require('./core/createWebview.js')
+const createWebview = require('./core/createWebview.js') 
 
 let webviewPanel = hx.window.createWebView("ht.code.mycodeview", {
 	enableScripts: true
